@@ -1,1 +1,280 @@
+Excellent. You have successfully navigated the most difficult part—making the DDL file compatible. Now you get to do the rewarding work of actually analyzing it.
 
+You are correct, the next logical step is to create a Jupyter Notebook (.ipynb file) to interact with your cleaned .sql file. This will be your central workbench for all the analysis you listed.
+
+Here is a complete, step-by-step guide to setting up and using your new notebook for this purpose.
+
+Step 1: Your Project Setup
+
+First, let's confirm your project folder structure. This setup will ensure all the file paths in the code work correctly.
+
+Generated code
+your_project_folder/
+|
+├── ddl/
+|   └── fst_compatible.sql    <-- Your new, cleaned SQL file
+|
+└── fst_analysis.ipynb      <-- The new notebook you will create now
+
+
+Create a new file named fst_analysis.ipynb in your main project folder. Now, let's add the code to it, cell by cell.
+
+Step 2: The Jupyter Notebook (fst_analysis.ipynb)
+
+Open your new notebook in VS Code. Here are the cells you will add.
+
+Cell 1: Install and Import Libraries
+
+This cell sets up your environment by importing the necessary libraries and configuring pandas for better display.
+
+Generated python
+# Install the required libraries directly from the notebook
+import sys
+!{sys.executable} -m pip install duckdb pandas
+
+# Import the libraries for use in our script
+import duckdb
+import os
+import pandas as pd
+
+# Set pandas display options to show all rows and columns
+# This is crucial for seeing the full results of your analysis
+print("Setting pandas display options.")
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', None)
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+Cell 2: The SQLAnalyzer Class
+
+This is the robust helper class we developed. It now includes the ability to connect to a persistent file, which is exactly what we need.
+
+Generated python
+class SQLAnalyzer:
+    def __init__(self, db_file=':memory:'):
+        """
+        Initializes a DuckDB database. Connects to a file if a path is provided.
+        """
+        self.db_file = db_file
+        self.conn = duckdb.connect(self.db_file)
+        print(f"✓ Database connection established to: '{self.db_file}'")
+    
+    def load_schema_from_ddl(self, ddl_file_path):
+        """Reads and executes a DDL file to create table schemas."""
+        print(f"\n> Loading schema from '{ddl_file_path}'...")
+        try:
+            with open(ddl_file_path, 'r') as f:
+                self.conn.execute(f.read())
+            print(f"✓ Schema DDL executed successfully.")
+        except Exception as e:
+            print(f"❌ Error loading DDL: {e}")
+            
+    def analyze(self, query):
+        """Runs an analysis query and returns the result as a DataFrame."""
+        print("\n> Running analysis query...")
+        try:
+            result_df = self.conn.execute(query).df()
+            print(f"✓ Query successful, returned {len(result_df)} rows.")
+            return result_df
+        except Exception as e:
+            print(f"❌ Query failed: {e}")
+            return None
+            
+    def close(self):
+        """Closes the database connection."""
+        self.conn.close()
+        print(f"\n✓ Database connection to '{self.db_file}' closed.")
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+Cell 3: The "First-Time Setup" Cell
+
+You will only run this cell ONCE. Its job is to create a persistent DuckDB database file, load your entire fst_compatible.sql schema into it, and then save it.
+
+Generated python
+# --- FIRST-TIME SETUP CELL (Run this only once) ---
+
+# Define the path for your persistent FST database file
+db_filepath = 'fst_database.duckdb'
+
+# If the file already exists, delete it to ensure a fresh start
+if os.path.exists(db_filepath):
+    os.remove(db_filepath)
+    print(f"Removed old database file: '{db_filepath}'")
+
+# 1. Initialize our analyzer, which creates the new database file
+print("--- Creating and initializing a new persistent FST database ---")
+analyzer = SQLAnalyzer(db_file=db_filepath)
+
+# 2. Load the FST schema from your compatible DDL file
+fst_ddl_file = os.path.join('ddl', 'fst_compatible.sql')
+analyzer.load_schema_from_ddl(fst_ddl_file)
+
+print("\n--- Persistent FST database has been created! ---")
+# Close the connection to ensure all data is written to the file
+analyzer.close()
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+
+After running this, you will see a file named fst_database.duckdb in your folder. This is your database.
+
+Cell 4: The "Connect and Analyze" Cell
+
+This will be your daily starting point. From now on, you will skip Cell 3 and run this cell first to connect to your already-built database.
+
+Generated python
+# --- YOUR DAILY STARTING POINT (Connect to the existing database) ---
+
+db_filepath = 'fst_database.duckdb'
+
+# 1. Connect to the EXISTING persistent database file
+print("--- Connecting to existing FST database ---")
+analyzer = SQLAnalyzer(db_file=db_filepath)
+
+# 2. Verify that the tables are loaded correctly
+print("\nVerifying tables in the FST schema...")
+# Note: We query where schema_name is 'FST'
+fst_tables_df = analyzer.analyze("SELECT table_name FROM duckdb_tables() WHERE schema_name = 'FST' ORDER BY table_name;")
+display(fst_tables_df.head()) # Display the first few tables to confirm
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+Step 3: Perform Your Analysis (The Payoff)
+
+Now that you are connected, you can run all the profiling queries you want. Here are the cells for the specific tasks you asked for.
+
+Analysis Cell 1: Find the Most Common Columns
+
+This query tells you which columns are the most likely candidates for joining tables together.
+
+Generated python
+# --- Find the most frequently occurring columns in the FST schema ---
+
+common_columns_query = """
+SELECT
+    column_name,
+    COUNT(DISTINCT table_name) AS table_count,
+    LIST(DISTINCT table_name ORDER BY table_name) AS tables
+FROM
+    information_schema.columns
+WHERE
+    table_schema = 'FST'
+GROUP BY
+    column_name
+ORDER BY
+    table_count DESC;
+"""
+
+print("--- Finding the most common columns in the FST schema ---")
+common_columns_df = analyzer.analyze(common_columns_query)
+
+print("\nTop 15 most common columns:")
+display(common_columns_df.head(15))
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+Analysis Cell 2: Find Primary Keys (The "Anchors")
+
+This query identifies the unique identifier for each table, which is crucial for understanding what each table represents.
+
+Generated python
+# --- Find all PRIMARY KEY constraints and format them for readability ---
+
+pk_query = """
+SELECT
+    table_name,
+    constraint_text
+FROM
+    duckdb_constraints
+WHERE
+    schema_name = 'FST' AND constraint_type = 'PRIMARY KEY'
+ORDER BY
+    table_name;
+"""
+
+print("--- Finding all Primary Key constraints in FST schema ---")
+primary_key_df = analyzer.analyze(pk_query)
+
+if primary_key_df is not None and not primary_key_df.empty:
+    clean_pk_df = primary_key_df.copy()
+    clean_pk_df['Key Columns'] = clean_pk_df['constraint_text'].str.replace('PRIMARY KEY', '', case=False).str.strip().str.strip('()')
+    clean_pk_df = clean_pk_df.drop(columns=['constraint_text']).rename(columns={'table_name': 'Table Name'})
+    
+    print("\n--- FST Table Unique Identifiers (Formatted View) ---")
+    display(clean_pk_df[['Table Name', 'Key Columns']])
+else:
+    print("\nNo PRIMARY KEY constraints were found in the FST schema.")
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+Analysis Cell 3: Find Foreign Keys (How Tables Connect)
+
+This is the most direct way to see the documented relationships between your tables.
+
+Generated python
+# --- Find all FOREIGN KEY constraints and format them for readability ---
+
+fk_query = """
+SELECT
+    table_name,
+    constraint_text
+FROM
+    duckdb_constraints
+WHERE
+    schema_name = 'FST' AND constraint_type = 'FOREIGN KEY'
+ORDER BY
+    table_name;
+"""
+
+print("--- Finding all Foreign Key constraints in FST schema ---")
+foreign_key_df = analyzer.analyze(fk_query)
+
+if foreign_key_df is not None and not foreign_key_df.empty:
+    processed_relationships = []
+    for index, row in foreign_key_df.iterrows():
+        source_table, constraint = row['table_name'], row['constraint_text']
+        source_part, target_part = constraint.split(' REFERENCES ')
+        source_columns = source_part.replace('FOREIGN KEY', '').strip().strip('()')
+        target_table_and_cols = target_part.split('(')
+        target_table = target_table_and_cols[0].replace('FST.', '').strip()
+        target_columns = target_table_and_cols[1].strip(')')
+        processed_relationships.append({
+            'Source Table': source_table,
+            'Source Columns': source_columns,
+            'Target Table': target_table,
+            'Target Columns': target_columns
+        })
+    clean_fk_df = pd.DataFrame(processed_relationships)
+    
+    print("\n--- FST Documented Table Relationships (Formatted View) ---")
+    display(clean_fk_df)
+else:
+    print("\nNo FOREIGN KEY constraints were found in the FST schema.")
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+
+You now have a complete, reusable notebook environment specifically tailored to analyze your new FST database schema. You can add more analysis cells as needed to continue your exploration.
