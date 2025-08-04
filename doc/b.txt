@@ -1,9 +1,1 @@
-Hello Megan,
-Thank you for your reply.
-I want to work on a demo using Graph Studio(Anzo) and would appreciate your input on the key points.
-I want to present the value proposition for semantic knowledge graphs. Also the goal is to show that it's not always necessary to position a knowledge graph platform after a data lake every time.
-My core message is that knowledge graph platforms can deliver significant value by connecting directly to data sources when required. This approach avoids the step of first moving all data into a data lake or similar repository every time. By building the knowledge graph directly from the sources, we can perform semantic ETL (or ELT) to integrate and harmonize diverse data. (from sources like SAP, Azure IoT Hub, Amazon S3, MangoDB, PostgreSQL, MSSQL, OracleDB, and also ingest data from formats like XML, JSON)
-I want to show it can eliminate redundant data storage and complex ETL pipelines that are often associated with a centralized data lake approach. Plus knowledge graph platform provides the flexibility to either virtualize data for real-time insights or materialize it for performance-intensive analytics.
-So any help would be useful for this. 
-Also, please invite me to the upcoming meeting with Rob and Christine
 
