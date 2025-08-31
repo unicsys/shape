@@ -1,1 +1,408 @@
+import csv
+import re
 
+def clean_acronym_csv(input_file, output_file):
+    """
+    Cleans a CSV file containing acronyms with encoding issues and extra commas.
+    
+    Args:
+        input_file: Path to the input CSV file
+        output_file: Path to the output CSV file
+    """
+    
+    acronyms = []
+    
+    # Read the file with different encoding options to handle special characters
+    encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+    
+    for encoding in encodings:
+        try:
+            with open(input_file, 'r', encoding=encoding) as file:
+                lines = file.readlines()
+            print(f"Successfully read file with {encoding} encoding")
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        # If all encodings fail, read with error handling
+        with open(input_file, 'r', encoding='utf-8', errors='replace') as file:
+            lines = file.readlines()
+            print("Read file with UTF-8 encoding and error replacement")
+    
+    for line in lines:
+        # Skip empty lines or lines with only commas
+        if line.strip().replace(',', '') == '':
+            continue
+        
+        # Remove replacement characters (�) and other non-printable characters
+        # These appear as boxes with question marks - handles multiple consecutive symbols
+        cleaned_line = re.sub(r'[^\x20-\x7E\n,]', '', line)
+        
+  
+        # Remove extra commas at the end
+        cleaned_line = re.sub(r',+$', '', cleaned_line.strip())
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip()
+            
+            # Remove any trailing commas from the full form
+            full_form = full_form.rstrip(',')
+            
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        
+        # Write header
+        writer.writerow(['Acronym', 'Full Form'])
+        
+        # Write data
+        for row in acronyms:
+            writer.writerow(row)
+    
+    print(f"\nProcessed {len(acronyms)} acronyms")
+    print(f"Output saved to: {output_file}")
+    
+    # Display first few entries as preview
+    print("\nFirst few entries:")
+    for i, (acronym, full_form) in enumerate(acronyms[:5]):
+        print(f"  {acronym} -> {full_form}")
+    
+    return acronyms
+
+# Alternative function if you want to read from string content directly
+def clean_acronym_csv_from_string(csv_content, output_file):
+    """
+    Cleans CSV content provided as a string.
+    
+    Args:
+        csv_content: String containing the CSV data
+        output_file: Path to the output CSV file
+    """
+    
+    acronyms = []
+    lines = csv_content.split('\n')
+    
+    for line in lines:
+        # Skip empty lines or lines with only commas
+        if line.strip().replace(',', '') == '':
+            continue
+        
+        # Remove non-ASCII characters and clean up
+        cleaned_line = re.sub(r'[^\x20-\x7E\n,]', '', line)
+        
+        # Remove extra commas at the end
+        cleaned_line = re.sub(r',+
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip().rstrip(',')
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Acronym', 'Full Form'])
+        writer.writerows(acronyms)
+    
+    return acronyms
+
+# Main execution
+if __name__ == "__main__":
+    # Example usage
+    input_file = "acronyms_raw.csv"  # Replace with your input file name
+    output_file = "acronyms_clean.csv"  # Replace with desired output file name
+    
+    try:
+        # Process the file
+        result = clean_acronym_csv(input_file, output_file)
+        
+        print(f"\n✅ Successfully created clean CSV with {len(result)} entries")
+        
+    except FileNotFoundError:
+        print(f"❌ Error: Could not find input file '{input_file}'")
+        print("\nPlease make sure the file exists and update the file path.")
+        
+        # Example of how to use with direct string input
+        print("\n--- Alternative: Using sample data ---")
+        sample_data = """�TEC� Turbine Exhaust Case,,,,,,,
+,,,,,,,,,
+�TWG��������� Test Working Group,,,,,,,
+,,,,,,,,,
+�ABC������ Advanced Base Camp,,,,,,,
+�XYZ����������������� eXtreme Yellow Zone,,,,,,,"""
+        
+        result = clean_acronym_csv_from_string(sample_data, "sample_output.csv")
+        print(f"Created sample output with {len(result)} entries"), '', cleaned_line.strip())
+        
+        # Remove any extra spaces that might be left after removing special characters
+        cleaned_line = re.sub(r'\s+', ' ', cleaned_line)
+        
+        # Skip if the line is now empty
+        if not cleaned_line:
+            continue
+        
+        # Try to extract acronym and full form
+        # Pattern: acronym followed by space(s) and then the full form
+        # This works even if there were multiple � symbols between them
+        match = re.match(r'([A-Z]+)\s+(.+)', cleaned_line)
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip()
+            
+            # Remove any trailing commas from the full form
+            full_form = full_form.rstrip(',')
+            
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        
+        # Write header
+        writer.writerow(['Acronym', 'Full Form'])
+        
+        # Write data
+        for row in acronyms:
+            writer.writerow(row)
+    
+    print(f"\nProcessed {len(acronyms)} acronyms")
+    print(f"Output saved to: {output_file}")
+    
+    # Display first few entries as preview
+    print("\nFirst few entries:")
+    for i, (acronym, full_form) in enumerate(acronyms[:5]):
+        print(f"  {acronym} -> {full_form}")
+    
+    return acronyms
+
+# Alternative function if you want to read from string content directly
+def clean_acronym_csv_from_string(csv_content, output_file):
+    """
+    Cleans CSV content provided as a string.
+    
+    Args:
+        csv_content: String containing the CSV data
+        output_file: Path to the output CSV file
+    """
+    
+    acronyms = []
+    lines = csv_content.split('\n')
+    
+    for line in lines:
+        # Skip empty lines or lines with only commas
+        if line.strip().replace(',', '') == '':
+            continue
+        
+        # Remove non-ASCII characters and clean up
+        cleaned_line = re.sub(r'[^\x20-\x7E\n,]', '', line)
+        cleaned_line = re.sub(r',+$', '', cleaned_line.strip())
+        
+        if not cleaned_line:
+            continue
+        
+        # Extract acronym and full form
+        match = re.match(r'([A-Z]+)\s+(.+)', cleaned_line)
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip().rstrip(',')
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Acronym', 'Full Form'])
+        writer.writerows(acronyms)
+    
+    return acronyms
+
+# Main execution
+if __name__ == "__main__":
+    # Example usage
+    input_file = "acronyms_raw.csv"  # Replace with your input file name
+    output_file = "acronyms_clean.csv"  # Replace with desired output file name
+    
+    try:
+        # Process the file
+        result = clean_acronym_csv(input_file, output_file)
+        
+        print(f"\n✅ Successfully created clean CSV with {len(result)} entries")
+        
+    except FileNotFoundError:
+        print(f"❌ Error: Could not find input file '{input_file}'")
+        print("\nPlease make sure the file exists and update the file path.")
+        
+        # Example of how to use with direct string input
+        print("\n--- Alternative: Using sample data ---")
+        sample_data = """�TEC� Turbine Exhaust Case,,,,,,,
+,,,,,,,,,
+�TWG� Test Working Group,,,,,,,
+,,,,,,,,,
+�ABC� Advanced Base Camp,,,,,,,"""
+        
+        result = clean_acronym_csv_from_string(sample_data, "sample_output.csv")
+        print(f"Created sample output with {len(result)} entries"), '', cleaned_line.strip())
+        
+        # Remove any extra spaces that might be left after removing special characters
+        cleaned_line = re.sub(r'\s+', ' ', cleaned_line)
+        
+        if not cleaned_line:
+            continue
+        
+        # Extract acronym and full form
+        match = re.match(r'([A-Z]+)\s+(.+)', cleaned_line)
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip().rstrip(',')
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Acronym', 'Full Form'])
+        writer.writerows(acronyms)
+    
+    return acronyms
+
+# Main execution
+if __name__ == "__main__":
+    # Example usage
+    input_file = "acronyms_raw.csv"  # Replace with your input file name
+    output_file = "acronyms_clean.csv"  # Replace with desired output file name
+    
+    try:
+        # Process the file
+        result = clean_acronym_csv(input_file, output_file)
+        
+        print(f"\n✅ Successfully created clean CSV with {len(result)} entries")
+        
+    except FileNotFoundError:
+        print(f"❌ Error: Could not find input file '{input_file}'")
+        print("\nPlease make sure the file exists and update the file path.")
+        
+        # Example of how to use with direct string input
+        print("\n--- Alternative: Using sample data ---")
+        sample_data = """�TEC� Turbine Exhaust Case,,,,,,,
+,,,,,,,,,
+�TWG��������� Test Working Group,,,,,,,
+,,,,,,,,,
+�ABC������ Advanced Base Camp,,,,,,,
+�XYZ����������������� eXtreme Yellow Zone,,,,,,,"""
+        
+        result = clean_acronym_csv_from_string(sample_data, "sample_output.csv")
+        print(f"Created sample output with {len(result)} entries"), '', cleaned_line.strip())
+        
+        # Remove any extra spaces that might be left after removing special characters
+        cleaned_line = re.sub(r'\s+', ' ', cleaned_line)
+        
+        # Skip if the line is now empty
+        if not cleaned_line:
+            continue
+        
+        # Try to extract acronym and full form
+        # Pattern: acronym followed by space(s) and then the full form
+        # This works even if there were multiple � symbols between them
+        match = re.match(r'([A-Z]+)\s+(.+)', cleaned_line)
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip()
+            
+            # Remove any trailing commas from the full form
+            full_form = full_form.rstrip(',')
+            
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        
+        # Write header
+        writer.writerow(['Acronym', 'Full Form'])
+        
+        # Write data
+        for row in acronyms:
+            writer.writerow(row)
+    
+    print(f"\nProcessed {len(acronyms)} acronyms")
+    print(f"Output saved to: {output_file}")
+    
+    # Display first few entries as preview
+    print("\nFirst few entries:")
+    for i, (acronym, full_form) in enumerate(acronyms[:5]):
+        print(f"  {acronym} -> {full_form}")
+    
+    return acronyms
+
+# Alternative function if you want to read from string content directly
+def clean_acronym_csv_from_string(csv_content, output_file):
+    """
+    Cleans CSV content provided as a string.
+    
+    Args:
+        csv_content: String containing the CSV data
+        output_file: Path to the output CSV file
+    """
+    
+    acronyms = []
+    lines = csv_content.split('\n')
+    
+    for line in lines:
+        # Skip empty lines or lines with only commas
+        if line.strip().replace(',', '') == '':
+            continue
+        
+        # Remove non-ASCII characters and clean up
+        cleaned_line = re.sub(r'[^\x20-\x7E\n,]', '', line)
+        cleaned_line = re.sub(r',+$', '', cleaned_line.strip())
+        
+        if not cleaned_line:
+            continue
+        
+        # Extract acronym and full form
+        match = re.match(r'([A-Z]+)\s+(.+)', cleaned_line)
+        
+        if match:
+            acronym = match.group(1).strip()
+            full_form = match.group(2).strip().rstrip(',')
+            acronyms.append([acronym, full_form])
+    
+    # Write to output CSV
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Acronym', 'Full Form'])
+        writer.writerows(acronyms)
+    
+    return acronyms
+
+# Main execution
+if __name__ == "__main__":
+    # Example usage
+    input_file = "acronyms_raw.csv"  # Replace with your input file name
+    output_file = "acronyms_clean.csv"  # Replace with desired output file name
+    
+    try:
+        # Process the file
+        result = clean_acronym_csv(input_file, output_file)
+        
+        print(f"\n✅ Successfully created clean CSV with {len(result)} entries")
+        
+    except FileNotFoundError:
+        print(f"❌ Error: Could not find input file '{input_file}'")
+        print("\nPlease make sure the file exists and update the file path.")
+        
+        # Example of how to use with direct string input
+        print("\n--- Alternative: Using sample data ---")
+        sample_data = """�TEC� Turbine Exhaust Case,,,,,,,
+,,,,,,,,,
+�TWG� Test Working Group,,,,,,,
+,,,,,,,,,
+�ABC� Advanced Base Camp,,,,,,,"""
+        
+        result = clean_acronym_csv_from_string(sample_data, "sample_output.csv")
+        print(f"Created sample output with {len(result)} entries")
