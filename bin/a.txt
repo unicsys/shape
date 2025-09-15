@@ -1,1 +1,99 @@
+Slide 2 – Problem Statement
 
+DoD mission effectiveness depends on responsiveness, not efficiency.
+
+Current supply chain structure is tiered, opaque, and slow.
+
+Critical manufacturing (chips, batteries, pharma) is offshore.
+
+Lack of visibility into MSMM (Micro, Small, Mid-size Manufacturers) capabilities → limits surge response.
+
+Slide 3 – Technical Gap
+
+Capacity visibility: proprietary & confidential.
+
+Capability visibility: no standard way to define & share.
+
+Ontologies today: static, hard to update at speed.
+
+Result: OEM-driven, siloed supply chains → no agility.
+
+Slide 4 – Proposed Approach
+
+Supply Network Ontology + Knowledge Graph
+
+Standardized vocabulary for manufacturing processes, machines, sectors.
+
+Linked graph of suppliers & capabilities.
+
+LLM-driven Ontology Integration
+
+Convert unstructured supplier capability data → ontology-aligned entries.
+
+Auto-formalize queries into machine-actionable logic.
+
+Neuro-Symbolic Methods
+
+LLMs generate → formal reasoning tools validate (constraint solving, model checking).
+
+Ensures consistency + removes hallucinations.
+
+Slide 5 – Technical Workstreams
+
+Ontology & Knowledge Graph Layer
+
+Manufacturing Ontology (processes: additive, subtractive, robotics, biotech, defense).
+
+Graph DB with supplier capability nodes.
+
+LLM Integration Layer
+
+LLM trained on manufacturing + defense sectors.
+
+Auto-formalization pipeline:
+
+Query → LLM → refinement → formal methods → formalized query.
+
+Capability Database
+
+Large-scale MSMM capability ingestion (100K+ suppliers).
+
+Continuous updates via LLM extraction & mapping.
+
+Validation Use Cases
+
+Drone manufacturing, battery production.
+
+Lot size of one and lot size of many.
+
+Slide 6 – Current Progress
+
+Built 100K+ supplier capability database.
+
+Trained AI models to identify cross-sector manufacturing patterns.
+
+Developed methods to map replaceable manufacturing steps → alternate suppliers.
+
+Demonstrated rapid manufacturing path generation for surge response.
+
+Slide 7 – Impact for DoD & Enterprise
+
+Agility: rapid pivot to lot-size-one or mass production.
+
+Resilience: reduces dependency on foreign suppliers.
+
+Scalability: AI-driven expansion of supplier base.
+
+Cost efficiency: alternative to expensive TCA/DCA contracts.
+
+Slide 8 – Next Steps / Proposal
+
+Formalize ontology–LLM integration pipeline.
+
+Build company-internal pilot:
+
+Capability ingestion + knowledge graph + LLM query layer.
+
+Validate on two use cases (drones & batteries).
+
+Scale to broader defense manufacturing applications.
