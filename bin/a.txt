@@ -1,99 +1,29 @@
-Slide 2 – Problem Statement
+Key Achievements (In Detail)
 
-DoD mission effectiveness depends on responsiveness, not efficiency.
+The team's efforts this period have been focused on laying a strong, strategic foundation for the project. This has yielded two significant achievements that I am pleased to report.
 
-Current supply chain structure is tiered, opaque, and slow.
+1. Formalized Three Competing Methodological Approaches:
 
-Critical manufacturing (chips, batteries, pharma) is offshore.
+My team has structured a formal A/B/C comparative study to scientifically evaluate the trade-offs between physical fidelity, data-driven modeling, and computational feasibility. This ensures our final selection is based on rigorous evidence.
 
-Lack of visibility into MSMM (Micro, Small, Mid-size Manufacturers) capabilities → limits surge response.
+    Method 1: The Physics-Based Baseline: We have designated a standard Unscented Kalman Filter, driven by the established equations of motion, as our scientific baseline. This represents the current state-of-the-art and serves as the performance benchmark all other methods must exceed.
 
-Slide 3 – Technical Gap
+    Method 2: The Hybrid SciML Surrogate (Primary Innovation): The team has designed a novel hybrid architecture that synergizes machine learning with physics. This model is engineered to learn from data while being constrained by physical principles, with the strategic goal of improving upon the baseline's accuracy and data efficiency.
 
-Capacity visibility: proprietary & confidential.
+    Method 3: The Purely Data-Driven Approach: We directed an analysis of purely data-driven models to thoroughly understand their operational envelope. This work confirmed the inherent limitations of such approaches for long-term forecasting, providing a clear justification for our focus on physics-informed techniques.
 
-Capability visibility: no standard way to define & share.
+2. Established a Rigorous Empirical Validation Framework:
 
-Ontologies today: static, hard to update at speed.
+To ensure our findings are robust and quantifiable, the team has engineered a formal validation framework to subject each methodology to a controlled stress test.
 
-Result: OEM-driven, siloed supply chains → no agility.
+    Defined Data Corruption Protocols: We have specified a testing protocol that simulates real-world sensor failures, including varying percentages of both missing data and outlier data. This "virtual obstacle course" will ensure the winning model is genuinely robust.
 
-Slide 4 – Proposed Approach
+    Developed Key Performance Indicators (KPIs): The team has defined a scorecard of quantitative metrics to objectively evaluate each model's performance on:
 
-Supply Network Ontology + Knowledge Graph
+        Predictive Accuracy: The model's ability to make precise forecasts.
 
-Standardized vocabulary for manufacturing processes, machines, sectors.
+        UQ Calibration: The trustworthiness of the model's self-reported confidence.
 
-Linked graph of suppliers & capabilities.
+        System Responsiveness: The model's ability to recognize and adapt to data quality degradation.
 
-LLM-driven Ontology Integration
-
-Convert unstructured supplier capability data → ontology-aligned entries.
-
-Auto-formalize queries into machine-actionable logic.
-
-Neuro-Symbolic Methods
-
-LLMs generate → formal reasoning tools validate (constraint solving, model checking).
-
-Ensures consistency + removes hallucinations.
-
-Slide 5 – Technical Workstreams
-
-Ontology & Knowledge Graph Layer
-
-Manufacturing Ontology (processes: additive, subtractive, robotics, biotech, defense).
-
-Graph DB with supplier capability nodes.
-
-LLM Integration Layer
-
-LLM trained on manufacturing + defense sectors.
-
-Auto-formalization pipeline:
-
-Query → LLM → refinement → formal methods → formalized query.
-
-Capability Database
-
-Large-scale MSMM capability ingestion (100K+ suppliers).
-
-Continuous updates via LLM extraction & mapping.
-
-Validation Use Cases
-
-Drone manufacturing, battery production.
-
-Lot size of one and lot size of many.
-
-Slide 6 – Current Progress
-
-Built 100K+ supplier capability database.
-
-Trained AI models to identify cross-sector manufacturing patterns.
-
-Developed methods to map replaceable manufacturing steps → alternate suppliers.
-
-Demonstrated rapid manufacturing path generation for surge response.
-
-Slide 7 – Impact for DoD & Enterprise
-
-Agility: rapid pivot to lot-size-one or mass production.
-
-Resilience: reduces dependency on foreign suppliers.
-
-Scalability: AI-driven expansion of supplier base.
-
-Cost efficiency: alternative to expensive TCA/DCA contracts.
-
-Slide 8 – Next Steps / Proposal
-
-Formalize ontology–LLM integration pipeline.
-
-Build company-internal pilot:
-
-Capability ingestion + knowledge graph + LLM query layer.
-
-Validate on two use cases (drones & batteries).
-
-Scale to broader defense manufacturing applications.
+    Designed Performance Surface Mapping: The final output of this framework will be a set of performance surfaces that clearly delineate the operational limits of each model, providing essential guidance for its practical application.
